@@ -22,6 +22,10 @@ c953fb85d1ba   localstack/localstack   "docker-entrypoint.sh"   6 seconds ago   
 
 ```
 
+Delete all networks
+```bash
+docker network prune
+```
 
 Enter inside docker-image 
 ```bash
@@ -49,7 +53,9 @@ docker volume rm $(docker volume ls -q)
 
 Run those commands inside image to create bucket
 ```bash
-chmod +x /scripts/init-s3.sh && ./scripts/init-s3.sh
+cd /scripts
+chmod +x init-s3.sh
+./init-s3.sh
 ```
 
 List all buckets
@@ -73,4 +79,8 @@ Connect to database
 ```bash
 psql -h localhost -p 5432 -U postgres -W my_company
 ```
+
+
+
  
+

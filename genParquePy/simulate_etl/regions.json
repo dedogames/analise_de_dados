@@ -1,0 +1,24 @@
+{
+  "regions":[
+    {
+      "state": "SP",
+      "products": ["Geladeira, Tv"],
+      "percent": "32.7"
+    },
+    {
+      "state": "RJ",
+      "products": ["Geladeira"],
+      "percent": "21.8"
+    },
+    {
+      "state": "RS",
+      "products": ["roupa, mesa e banho"],
+      "percent": "10.9"
+    },
+    {
+      "state": "MG",
+      "products": ["Tv, maquinas de lavar"],
+      "percent": "34.5"
+    }
+  ]
+}

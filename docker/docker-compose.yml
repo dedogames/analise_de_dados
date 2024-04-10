@@ -10,11 +10,13 @@ services:
       - SERVICES=s3,postgres
       - DEBUG=1
       - file:scripts/cred.env
+    networks:
+      - dedo-ent
     volumes:
       - localstack_data:/var/localstack
-      - ./scripts/init-s3.sh:/scripts/init-s3.sh
+      - ./scripts/init-s3.sh:/scripts/init-s3.sh:rw
 
-  # PostgreSQL database
+#   PostgreSQL database
   postgres:
     image: postgres
     ports:
@@ -25,10 +27,24 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: postgres
       POSTGRES_DB: my_company
+    networks:
+      - dedo-ent
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts:/scripts
+  process_and_upload:
+    networks:
+      - dedo-ent
+    depends_on:
+      - localstack
+    image: py_gen_parquet
 
 volumes:
-  localstack_data: {}
-  postgres_data: {}
+  localstack_data:
+  postgres_data:
+
+networks:
+  dedo-ent:
+    driver: bridge
+
+
