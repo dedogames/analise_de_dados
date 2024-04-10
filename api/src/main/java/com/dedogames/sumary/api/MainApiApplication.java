@@ -1,13 +1,13 @@
-package com.dedogames.sumary;
+package com.dedogames.sumary.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SumaryApplication {
+public class MainApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SumaryApplication.class, args);
+		SpringApplication.run(MainApiApplication.class, args);
 	}
 
 }

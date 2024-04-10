@@ -47,6 +47,11 @@ delete all volumes
 docker volume rm $(docker volume ls -q)
 ```
 
+Run Docker with port exposed
+```bash
+docker run -p 8080:8080  IMAGE
+```
+
 ### S3
 
 
