@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+version '1.0.0'
+archivesBaseName = 'shared'
+
+
+
+repositories {
+    mavenCentral()
+    maven { url "https://packages.confluent.io/maven/" }
+}
+
+
+
+jar {
+    enabled = true
+}
+
+
+dependencies {
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.3'
+    }
+}
+
