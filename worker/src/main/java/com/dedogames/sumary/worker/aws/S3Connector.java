@@ -1,6 +1,6 @@
 package com.dedogames.sumary.worker.aws;
 
-import com.dedogames.sumary.shared.observability.SimpleLogger;
+import com.dedogames.summary.shared.observability.SimpleLogger;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
@@ -74,6 +74,7 @@ public class S3Connector {
 
             S3AsyncClient s3AsyncClient = S3AsyncClient.builder()
                     .endpointOverride(customEndpoint)
+                    .forcePathStyle(true)
                     .build();
 
             transferManager = S3TransferManager.builder()
@@ -87,8 +88,11 @@ public class S3Connector {
                 .listObjectsV2RequestTransformer(l -> l.prefix(bucketFolder))
                 .build());
 
-        CompletedDirectoryDownload completedDirectoryDownload = directoryDownload.completionFuture().join();
-
+        try {
+            CompletedDirectoryDownload completedDirectoryDownload = directoryDownload.completionFuture().join();
+        }catch(Exception e){
+            logger.error(e.getMessage());
+        }
        logger.info( listFilesWithDetails(parquetdir));
        return true;
 

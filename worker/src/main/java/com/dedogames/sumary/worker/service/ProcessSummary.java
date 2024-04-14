@@ -1,18 +1,21 @@
 package com.dedogames.sumary.worker.service;
 
 
-import com.dedogames.sumary.shared.observability.SimpleLogger;
+import com.dedogames.summary.shared.entities.SummaryByRegions;
+import com.dedogames.summary.shared.observability.SimpleLogger;
 
 import com.dedogames.sumary.worker.aws.S3Connector;
 import com.dedogames.sumary.worker.util.ParquetFileManager;
+import com.dedogames.summary.shared.repositories.RepoSummaryByRegions;
 import jakarta.annotation.PostConstruct;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.util.Utf8;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.codehaus.jettison.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,12 +33,15 @@ public class ProcessSummary {
     @Value("${flow.region}")
     String region;
 
-    @Value("${flow.fileS3Name}")
-    String fileS3Name;
+    @Value("${flow.folderS3Path:#{null}}")
+    String folderS3Path;
 
     @Value("${flow.endpoint:#{null}}")
     String endpoint;
-//    private S3Connector s3Conn;
+
+
+    @Autowired
+    private RepoSummaryByRegions repo;
 
     private S3Connector s3Connector;
 
@@ -53,8 +59,6 @@ public class ProcessSummary {
             // 2 - Load Parquet from file and parse
             this.localParquetRds();
 
-            // 3 - Save into database
-            //    this.rdsFlow();
 
         } catch (Exception e) {
             logger.error(e.toString());
@@ -63,33 +67,31 @@ public class ProcessSummary {
     }
 
     boolean s3Flow() throws Exception {
-        return s3Connector.downloadDirectory(bucketName, fileS3Name);
+        return s3Connector.downloadDirectory(bucketName, folderS3Path);
     }
 
     void localParquetRds() throws Exception {
         GenericRecord record;
-        String field1 = null;
-        String field2 = "";
+
         String fullPath = s3Connector.getFullParquetdir().toString();
+        //Load parquet from file
         List<ParquetReader<GenericRecord>> listGenericRecords =  ParquetFileManager.loadParquetFilesFromFolder(fullPath);
         for (ParquetReader<GenericRecord> reader : listGenericRecords) {
 
             while ((record = reader.read()) != null) {
-                field1 = record.get("field1").toString();
-                Object filtersObject = record.get("field2");
-                if (filtersObject instanceof Utf8) {
-                    try {
-                        JSONObject filters = new JSONObject();
-                        Utf8 utf8 = (Utf8) filtersObject;
-                        field2 = utf8.toString();
-                    } catch (Exception e) {
-                        logger.error("Error creating JSON object for filters: " + e.getMessage());
-                    }
-                } else {
-                    logger.error("Error: filters field is not a GenericRecord");
-                }
+                List<String> products = new ArrayList<>();
+                GenericRecord regionsRecord = (GenericRecord) record.get("regions");
+                String state = regionsRecord.get("state").toString();
+                String percent = regionsRecord.get("percent").toString();
 
-                System.out.println("field1: "+ field1 + " field2: "+ field2);
+                //Get list products
+                List<GenericRecord> productRecords = (List<GenericRecord>) regionsRecord.get("products");
+                for(GenericRecord prod : productRecords){
+                    products.add( prod.get("element").toString());
+                }
+                logger.info(" Summary save into Postgress : State: "+state + " | Percent: "+ percent + "% |  Products:"+ products.toString());
+                repo.save(new SummaryByRegions(state,Double.parseDouble(percent), products.toString(), LocalDateTime.now()));
+
             }
         }
         ;

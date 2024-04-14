@@ -43,7 +43,7 @@ services:
       POSTGRES_DB: my_company
     depends_on:
       - localstack
-    image: py_gen_parquet
+    image: process_and_upload
 
 volumes:
   localstack_data:

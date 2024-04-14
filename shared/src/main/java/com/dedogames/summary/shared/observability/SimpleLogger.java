@@ -1,4 +1,4 @@
-package com.dedogames.sumary.shared.observability;
+package com.dedogames.summary.shared.observability;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

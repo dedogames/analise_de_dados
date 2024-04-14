@@ -3,7 +3,7 @@ package com.dedogames.sumary.api.controllers;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.dedogames.sumary.shared.observability.SimpleLogger;
+import com.dedogames.summary.shared.observability.SimpleLogger;
 
 @RestController
 @RequestMapping("/health")
