@@ -20,30 +20,48 @@ public class S3Connector {
 
     private String endPoint;
 
+    public Path getFullParquetdir() {
+        return parquetdir;
+    }
+
     private Path parquetdir;
 
-    public S3Connector(){
+    public S3Connector( ){
+
+        Region region = Region.US_EAST_1;
+        logger.info("Initialize Default S3Connector in  "+region.toString()+" with default S3 Client" );
+        endPoint = null;
+
+        Path homeDirectory = Paths.get(System.getProperty("user.dir"));
+        Path localFolderPath = Paths.get("defaultDir");
+        parquetdir  = homeDirectory.resolve(localFolderPath);
+    }
+
+    public S3Connector( String localFolder){
 
         Region region = Region.US_EAST_1;
         logger.info("Initialize S3Connector in  "+region.toString()+" with default S3 Client" );
         endPoint = null;
+
+        Path homeDirectory = Paths.get(System.getProperty("user.dir"));
+        Path localFolderPath = Paths.get(localFolder);
+        parquetdir  = homeDirectory.resolve(localFolderPath);
     }
-    public S3Connector(String endpoint,String strRegion) {
+    public S3Connector(String endpoint,String strRegion, String localFolder) {
         Region region = Region.US_EAST_1;
         if(strRegion != "us-east-1"){
             region = Region.of(strRegion);
         }
         logger.info("Initialize S3Connector in  "+region.toString()+" with S3 Client endpoint: "+endpoint );
 
+        Path homeDirectory = Paths.get(System.getProperty("user.dir"));
+        Path localFolderPath = Paths.get(localFolder);
+        parquetdir  = homeDirectory.resolve(localFolderPath);
         endPoint = endpoint;
 
     }
 
-    public boolean downloadDirectory( String bucketName, String bucketFolder ,String localFolder) throws IOException {
-
-        Path homeDirectory = Paths.get(System.getProperty("user.dir"));
-        Path localFolderPath = Paths.get(localFolder);
-        parquetdir  = homeDirectory.resolve(localFolderPath);
+    public boolean downloadDirectory( String bucketName, String bucketFolder ) throws IOException {
 
         Files.createDirectories(parquetdir);
         logger.info("Directory created successfully: " + parquetdir);

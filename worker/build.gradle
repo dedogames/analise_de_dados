@@ -25,37 +25,26 @@ repositories {
 dependencies {
     implementation project(':shared')
 
-
-    //Avro
-    implementation 'org.apache.parquet:parquet-format:2.10.0'
-
     //Parquet
     implementation("org.apache.hadoop:hadoop-common:3.4.0")
-    implementation 'org.apache.parquet:parquet-avro:1.13.1'
+    implementation("org.apache.parquet:parquet-avro:1.13.1")
+    implementation("org.apache.hadoop:hadoop-client:3.4.0")
 
+    //Aws v2
+    runtimeOnly("software.amazon.awssdk:bom:2.25.31")
+    implementation("software.amazon.awssdk:s3:2.25.31")
+    implementation("software.amazon.awssdk:core:2.17.28")
+//    implementation("software.amazon.awssdk:sts:2.25.31")
 
-//    implementation 'org.apache.avro:avro:1.11.0'
-//    implementation "org.apache.parquet:parquet-avro:1.8.1"
-//    implementation 'org.apache.parquet:parquet-common:1.13.1'
-//    implementation 'org.apache.parquet:parquet-hadoop:1.13.1'
-
-
+    implementation("software.amazon.awssdk:s3-transfer-manager:2.25.31")
     configurations.all {
         exclude group: 'org.slf4j', module: 'slf4j-reload4j'
-        //	exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
-    //Aws
-    runtimeOnly "software.amazon.awssdk:bom:2.25.31"
-    implementation "software.amazon.awssdk:s3:2.25.31"
-    implementation "software.amazon.awssdk:core:2.17.28"
-    implementation "software.amazon.awssdk:sts:2.25.31"
-    implementation 'software.amazon.awssdk:s3-transfer-manager:2.25.31'
-
     //Spring
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation("org.springframework.boot:spring-boot-starter")
 
     //Test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 
